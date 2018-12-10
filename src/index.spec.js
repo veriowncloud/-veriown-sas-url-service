@@ -40,6 +40,12 @@ describe('SasUrlService', () => {
 
       expect(result).to.have.string('hello-world');
     });
+
+    it('should return null if given uuid is null', async () => {
+      expect(service.getReadSasUrl(null)).to.be.equal(null);
+      expect(service.getReadSasUrl()).to.be.equal(null);
+      expect(service.getReadSasUrl('')).to.be.equal(null);
+    });
   });
 
   describe('.getWriteSasUrls', () => {
@@ -54,6 +60,13 @@ describe('SasUrlService', () => {
     it('should give absolute URL corresponding to configured route to access asset with given UUID', () => {
       service.createExpressRouter('/uploads');
       expect(isURL(service.getLocalReadUrl('hello-world'), { require_host: false })).to.be.equal(true);
+    });
+
+    it('should return null if given uuid is null', () => {
+      service.createExpressRouter('/uploads');
+      expect(service.getLocalReadUrl(null)).to.be.equal(null);
+      expect(service.getLocalReadUrl()).to.be.equal(null);
+      expect(service.getLocalReadUrl('')).to.be.equal(null);
     });
   });
 
@@ -71,7 +84,7 @@ describe('SasUrlService', () => {
         .get('/uploads/name-of-a-blob')
         .redirects(0);
 
-      return expect(res).to.have.header('Cache-Control', 'public, max-age=31557600');
+      return expect(res).to.have.header('Cache-Control', 'public, max-age=60');
     });
 
     it('should redirect to SAS url with appropriate blob path set', async () => {
