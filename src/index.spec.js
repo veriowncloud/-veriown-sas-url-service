@@ -55,6 +55,11 @@ describe('SasUrlService', () => {
       service.createExpressRouter('/uploads');
       expect(isURL(service.getLocalReadUrl('hello-world'), { require_host: false })).to.be.equal(true);
     });
+
+    it('should return null if given uuid is null', () => {
+      service.createExpressRouter('/uploads');
+      expect(service.getLocalReadUrl(null)).to.be.equal(null);
+    });
   });
 
   describe('.createExpressRouter', () => {
