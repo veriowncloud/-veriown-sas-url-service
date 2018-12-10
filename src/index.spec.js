@@ -40,6 +40,12 @@ describe('SasUrlService', () => {
 
       expect(result).to.have.string('hello-world');
     });
+
+    it('should return null if given uuid is null', async () => {
+      expect(service.getReadSasUrl(null)).to.be.equal(null);
+      expect(service.getReadSasUrl()).to.be.equal(null);
+      expect(service.getReadSasUrl('')).to.be.equal(null);
+    });
   });
 
   describe('.getWriteSasUrls', () => {

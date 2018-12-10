@@ -61,10 +61,12 @@ class SasUrlService {
   }
 
   getReadSasUrl(name) {
-    return this.getSasUrlForBlob({
-      permission: 'read',
-      name
-    });
+    return name
+      ? this.getSasUrlForBlob({
+        permission: 'read',
+        name
+      })
+      : null;
   }
 
   getWriteSasUrls(count) {
