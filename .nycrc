@@ -1,10 +1,4 @@
 {
-  "include": [
-    "./src/**/*.js"
-  ],
-  "exclude": [
-    "./src/**/*.spec.js"
-  ],
   "reporter": [
     "text-summary",
     "html"

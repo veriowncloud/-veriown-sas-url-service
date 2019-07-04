@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "main": "src/index.js",
   "scripts": {
-    "test": "NODE_ENV=test nyc mocha './src/**/*.spec.js' --exit",
+    "test": "NODE_ENV=test nyc --exclude 'src/**/*.spec.js' mocha './src/**/*.spec.js' --exit",
     "lint": "eslint ./src",
     "fmt": "prettier --write './src/**/*.js' && eslint --fix ./src"
   },
@@ -20,10 +20,11 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.0.0",
+    "chance": "^1.0.18",
     "eslint": "^4.19.1",
     "eslint-plugin-import": "^2.12.0",
     "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
+    "nyc": "^14.1.1",
     "prettier": "^1.13.5"
   }
 }

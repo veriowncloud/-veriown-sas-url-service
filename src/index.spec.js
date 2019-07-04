@@ -1,5 +1,6 @@
 const { describe, it, beforeEach } = require('mocha');
 const express = require('express');
+const chance = require('chance').Chance();
 const chai = require('chai');
 const { isURL } = require('validator');
 const chaiHttp = require('chai-http');
@@ -16,8 +17,30 @@ describe('SasUrlService', () => {
     service = new SasUrlService({
       container: 'sas-url-service-test',
       readTtl: '1m',
-      writeTtl: '1m'
+      writeTtl: '1m',
+      credentials: {
+        accountName: 'accountName',
+        accountKey: 'accountKey'
+      }
     });
+  });
+
+  it('should throw error if azure credentials are not provided', async () => {
+    expect(() => new SasUrlService({
+      container: 'sas-url-service-test',
+      readTtl: '1m',
+      writeTtl: '1m',
+    })).to.throw('Azure Storage credentials must be provided');
+
+    expect(() => new SasUrlService({
+      container: 'sas-url-service-test',
+      readTtl: '1m',
+      writeTtl: '1m',
+      credentials: {
+        accountName: chance.string(),
+        accountKey: chance.string()
+      }
+    })).to.not.throw('Azure Storage credentials must be provided');
   });
 
   describe('.getSasUrlForBlob', () => {
