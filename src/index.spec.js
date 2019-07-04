@@ -43,6 +43,26 @@ describe('SasUrlService', () => {
     })).to.not.throw('Azure Storage credentials must be provided');
   });
 
+  it('should throw error if incomplete azure credentials are provided', async () => {
+    expect(() => new SasUrlService({
+      container: 'sas-url-service-test',
+      readTtl: '1m',
+      writeTtl: '1m',
+      credentials: {
+        accountName: chance.string()
+      }
+    })).to.throw('InvalidArgument: credentials must have `accountName` and `accountKey` attributes');
+
+    expect(() => new SasUrlService({
+      container: 'sas-url-service-test',
+      readTtl: '1m',
+      writeTtl: '1m',
+      credentials: {
+        accountKey: Buffer.from(chance.string()).toString('base64')
+      }
+    })).to.throw('InvalidArgument: credentials must have `accountName` and `accountKey` attributes');
+  });
+
   describe('.getSasUrlForBlob', () => {
     it('should throw for invalid permission', () => {
       expect(() => service.getSasUrlForBlob({ permission: 'delete', name: 'name' })).to.throw('Invalid permission');

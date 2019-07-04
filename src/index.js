@@ -11,6 +11,10 @@ class SasUrlService {
       throw new Error('Azure Storage credentials must be provided');
     }
 
+    if (!credentials.accountName || !credentials.accountKey) {
+      throw new Error('InvalidArgument: credentials must have `accountName` and `accountKey` attributes');
+    }
+
     this.blobService = azure.createBlobService(credentials.accountName, credentials.accountKey);
     this.config = {};
     this.expressRouterPath = expressRouterPath || '/static'; // eslint-disable-line no-underscore-dangle
