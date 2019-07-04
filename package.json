@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "main": "src/index.js",
   "scripts": {
-    "test": "NODE_ENV=test nyc --exclude 'src/**/*.spec.js' mocha './src/**/*.spec.js' --exit",
+    "test": "NODE_ENV=test nyc --exclude 'src/**/*.spec.js' mocha './src/**/*.spec.js' --timeout=5000 --exit",
     "lint": "eslint ./src",
     "fmt": "prettier --write './src/**/*.js' && eslint --fix ./src"
   },

@@ -5,9 +5,13 @@ const ms = require('ms');
 
 class SasUrlService {
   constructor({
-    container, readTtl, writeTtl, expressRouterPath
+    container, readTtl, writeTtl, expressRouterPath, credentials
   }) {
-    this.blobService = azure.createBlobService();
+    if (!credentials) {
+      throw new Error('Azure Storage credentials must be provided');
+    }
+
+    this.blobService = azure.createBlobService(credentials.accountName, credentials.accountKey);
     this.config = {};
     this.expressRouterPath = expressRouterPath || '/static'; // eslint-disable-line no-underscore-dangle
 

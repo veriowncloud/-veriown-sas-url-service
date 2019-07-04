@@ -20,7 +20,7 @@ describe('SasUrlService', () => {
       writeTtl: '1m',
       credentials: {
         accountName: 'accountName',
-        accountKey: 'accountKey'
+        accountKey: 'a2V5Cg=='
       }
     });
   });
@@ -29,7 +29,7 @@ describe('SasUrlService', () => {
     expect(() => new SasUrlService({
       container: 'sas-url-service-test',
       readTtl: '1m',
-      writeTtl: '1m',
+      writeTtl: '1m'
     })).to.throw('Azure Storage credentials must be provided');
 
     expect(() => new SasUrlService({
@@ -38,7 +38,7 @@ describe('SasUrlService', () => {
       writeTtl: '1m',
       credentials: {
         accountName: chance.string(),
-        accountKey: chance.string()
+        accountKey: Buffer.from(chance.string()).toString('base64')
       }
     })).to.not.throw('Azure Storage credentials must be provided');
   });
@@ -94,14 +94,14 @@ describe('SasUrlService', () => {
         .get('/uploads/name-of-a-blob')
         .redirects(0);
 
-      return expect(res).to.have.header('Cache-Control', 'public, max-age=31557600');
+      return expect(res).to.have.header('Cache-Control', 'public, max-age=60');
     });
 
     it('should redirect to SAS url with appropriate blob path set', async () => {
       const res = await chai.request(app).get('/uploads/name-of-a-blob');
       const redirectUrl = service.getReadSasUrl('name-of-a-blob').split('?')[0];
 
-      return expect(res.redirects[0].split('?')[0]).to.be.equal(redirectUrl);
+      await expect(res.redirects[0].split('?')[0]).to.be.equal(redirectUrl);
     });
   });
 });
