@@ -94,7 +94,7 @@ class SasUrlService {
   }
 
   getLocalReadUrl(name) {
-    return name ? `${this.expressRouterPath}/${name}` : null;
+    return name ? `${this.expressRouterPath}/${encodeURIComponent(name)}` : null;
   }
 
   // TODO: A better name. Perhaps createLocalRedirectRouter or createLocalReadRouter ?
