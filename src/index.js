@@ -5,7 +5,7 @@ const ms = require('ms');
 
 class SasUrlService {
   constructor({
-    container, readTtl, writeTtl, expressRouterPath, credentials
+    container, readTtl, writeTtl, expressRouterPath, credentials, cdnEndpointName
   }) {
     if (!credentials) {
       throw new Error('Azure Storage credentials must be provided');
@@ -15,6 +15,7 @@ class SasUrlService {
       throw new Error('InvalidArgument: credentials must have `accountName` and `accountKey` attributes');
     }
 
+    this.cdnEndpointName = cdnEndpointName;
     this.blobService = azure.createBlobService(credentials.accountName, credentials.accountKey);
     this.config = {};
     this.expressRouterPath = expressRouterPath || '/static'; // eslint-disable-line no-underscore-dangle
@@ -69,12 +70,21 @@ class SasUrlService {
   }
 
   getReadSasUrl(name) {
-    return name
+    let urlStr = name
       ? this.getSasUrlForBlob({
         permission: 'read',
         name
       })
       : null;
+
+    if (this.cdnEndpointName && urlStr) {
+      const url = new URL(urlStr);
+      url.hostname = `${this.cdnEndpointName}.azureedge.net`;
+
+      urlStr = url.href;
+    }
+
+    return urlStr;
   }
 
   getWriteSasUrls(count) {
