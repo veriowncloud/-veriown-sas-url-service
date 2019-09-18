@@ -87,11 +87,11 @@ class SasUrlService {
     return urlStr;
   }
 
-  getWriteSasUrls(count) {
+  getWriteSasUrls(count, ext) {
     return Array.from({
       length: count
     }).map(() => {
-      const name = uuid();
+      const name = ext ? `${uuid()}.${ext}` : uuid();
 
       return {
         name,
