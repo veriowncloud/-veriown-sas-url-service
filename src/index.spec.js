@@ -97,6 +97,13 @@ describe('SasUrlService', () => {
 
       expect(result.length).to.be.equal(4);
     });
+
+    it('should return SAS url with name appended with extension when extension is provided', async () => {
+      const result = service.getWriteSasUrls(1, 'jpg');
+
+      expect(result.length).to.be.equal(1);
+      expect(result[0].name.split('.')[1]).to.be.equal('jpg');
+    });
   });
 
   describe('.getLocalReadUrl', () => {
