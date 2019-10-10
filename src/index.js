@@ -5,7 +5,16 @@ const ms = require('ms');
 
 class SasUrlService {
   constructor({
-    container, readTtl, writeTtl, expressRouterPath, credentials, cdnEndpointName
+    container,
+    readTtl,
+    writeTtl,
+    expressRouterPath = '/static',
+    credentials,
+    cdnEndpointName,
+    expressRouter = {
+      path: expressRouterPath,
+      cacheControlHeader: `max-age=${ms(readTtl) / 1000}`
+    }
   }) {
     if (!credentials) {
       throw new Error('Azure Storage credentials must be provided');
@@ -18,7 +27,7 @@ class SasUrlService {
     this.cdnEndpointName = cdnEndpointName;
     this.blobService = azure.createBlobService(credentials.accountName, credentials.accountKey);
     this.config = {};
-    this.expressRouterPath = expressRouterPath || '/static'; // eslint-disable-line no-underscore-dangle
+    this.expressRouter = expressRouter;
 
     this.config = {
       container,
@@ -29,15 +38,6 @@ class SasUrlService {
         ttl: writeTtl
       }
     };
-  }
-
-  get expressRouterPath() {
-    return this._expressRouterPath; // eslint-disable-line no-underscore-dangle
-  }
-
-  set expressRouterPath(val) {
-    // remove trailing / if it's present
-    this._expressRouterPath = val.replace(/\/$/, ''); // eslint-disable-line no-underscore-dangle
   }
 
   getSasUrlForBlob({ permission, name }) {
@@ -108,15 +108,19 @@ class SasUrlService {
   }
 
   // TODO: A better name. Perhaps createLocalRedirectRouter or createLocalReadRouter ?
-  createExpressRouter(path = this.expressRouterPath) {
-    this.expressRouterPath = path;
-    const routePath = `${this.expressRouterPath}/:uuid`;
+  createExpressRouter(path = this.expressRouter.path) {
+    this.expressRouter.path = path;
+    const routePath = `${this.expressRouter.path}/:uuid`;
 
     const router = new Router();
 
     router.use((req, res, next) => {
-      const readTtlSeconds = ms(this.config.read.ttl) / 1000;
-      res.setHeader('Cache-Control', `public, max-age=${readTtlSeconds}`);
+      if (
+        req.originalUrl.indexOf(this.expressRouter.path) >= 0
+        && this.expressRouter.cacheControlHeader
+      ) {
+        res.setHeader('Cache-Control', this.expressRouter.cacheControlHeader);
+      }
 
       return next();
     });

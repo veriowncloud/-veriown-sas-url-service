@@ -1,6 +1,6 @@
 {
   "name": "@veriown/sas-url-service",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "src/index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc --exclude 'src/**/*.spec.js' mocha './src/**/*.spec.js' --timeout=5000 --exit",

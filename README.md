@@ -11,13 +11,6 @@ urls](https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-share
     npm install
   ```
 
-## Configuration
-
-Following environment variables shall be present in order to connect to Azure storage service:
-
-- `AZURE_STORAGE_ACCOUNT`
-- `AZURE_STORAGE_ACCESS_KEY`
-
 ## Usage for client (end-user)
 
 - For uploading a file
@@ -39,9 +32,12 @@ const sasUrlService = new SasUrlCreator({
   container: 'leads-uploads',   // Name of the container. Must be already present on process.env.AZURE_STORAGE_ACCOUNT
   readTtl: '2d',                // Time after which read SAS URLs shall expire
   writeTtl: '15m',              // Time after which write SAS URLs shall expire
-  expressRouterPath: '/static'  // [Optional] Path at which GET redirect express-router shall serve.
+  expressRouter: {              // [Optional] configuration for express router
+    path: '/static',            // Path at which GET redirect express-router shall serve.
                                 // This will redirect /static/:uuid to SAS URL it'll be accessible at.
                                 // It can also be configured at the time when express-router is created
+    cacheControlHeader: ''      // Value to be set as `cache-control` header of /static/:uuid. Defaults to 'max-age=${ms(readTtl) / 1000}'
+  }
 });
 ```
 
