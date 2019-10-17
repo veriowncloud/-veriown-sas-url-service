@@ -134,7 +134,7 @@ describe('SasUrlService', () => {
         .get('/uploads/name-of-a-blob')
         .redirects(0);
 
-      return expect(res).to.have.header('Cache-Control', 'public, max-age=60');
+      return expect(res).to.have.header('Cache-Control', 'max-age=60');
     });
 
     it('should redirect to SAS url with appropriate blob path set', async () => {
